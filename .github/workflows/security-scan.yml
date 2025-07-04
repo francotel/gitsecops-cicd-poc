@@ -1,0 +1,67 @@
+name: 🔒 Container Security Pipeline
+on:
+  push:
+    branches: [ "trivy-test" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    
+    steps:
+    # FASE 1: PREPARACIÓN
+    - name: 🛠 Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    # FASE 2: SAST (ANÁLISIS ESTÁTICO)
+    - name: "🔍 [SAST] Secrets Scanning (Code)"
+      uses: aquasecurity/trivy-action@0.14.0
+      with:
+        scan-type: 'fs'
+        security-checks: 'secret'
+        format: 'sarif'
+        output: 'trivy-secrets.sarif'
+    
+    # FASE 3: BUILD
+    - name: "🏗 Build Docker Image"
+      run: docker build -t gitsecops-app:${{ github.sha }} .
+    
+    # FASE 4: SCA (DEPENDENCIAS)
+    - name: "📦 [SCA] Vulnerability Scan (OS/Libraries)"
+      uses: aquasecurity/trivy-action@0.14.0
+      with:
+        image-ref: 'gitsecops-app:${{ github.sha }}'
+        format: 'sarif'
+        output: 'trivy-vulns.sarif'
+        severity: 'CRITICAL,HIGH,MEDIUM'
+    
+    # FASE 5: CONTAINER HARDENING
+    - name: "🐳 [Container] Config Audit"
+      uses: aquasecurity/trivy-action@0.14.0
+      with:
+        image-ref: 'gitsecops-app:${{ github.sha }}'
+        scan-type: 'config'
+    
+    # FASE 6: SECRETS IN ARTIFACTS
+    - name: "🔑 [Secrets] Image Layers Scan"
+      uses: aquasecurity/trivy-action@0.14.0
+      with:
+        image-ref: 'gitsecops-app:${{ github.sha }}'
+        security-checks: 'secret'
+    
+    # FASE 7: REPORTING
+    - name: "📊 Upload SAST/SCA Results"
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: 'trivy-vulns.sarif'
+    
+    - name: "📈 Upload Secrets Report"
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: 'trivy-secrets.sarif'
