@@ -23,6 +23,13 @@ jobs:
       with:
         fetch-depth: 0
 
+    # FASE : CACHE
+    - name: Cache Trivy DB
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/trivy
+        key: ${{ runner.os }}-trivy-db
+
     # FASE 2: SAST (ANÁLISIS ESTÁTICO)
     - name: "🔍 [SAST] Secrets Scanning (Code)"
       uses: aquasecurity/trivy-action@0.32.0
@@ -40,7 +47,7 @@ jobs:
     - name: "📦 [SCA] Vulnerability Scan (OS/Libraries)"
       uses: aquasecurity/trivy-action@0.32.0
       with:
-        image-ref: $IMAGE_NAME:$IMAGE_TAG
+        image-ref: '$IMAGE_NAME:$IMAGE_TAG'
         format: 'sarif'
         output: 'trivy-vulns.sarif'
         severity: 'CRITICAL,HIGH,MEDIUM'
