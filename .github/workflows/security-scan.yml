@@ -21,7 +21,7 @@ jobs:
     
     # FASE 2: SAST (ANÁLISIS ESTÁTICO)
     - name: "🔍 [SAST] Secrets Scanning (Code)"
-      uses: aquasecurity/trivy-action@0.14.0
+      uses: aquasecurity/trivy-action@0.32.0
       with:
         scan-type: 'fs'
         security-checks: 'secret'
@@ -34,7 +34,7 @@ jobs:
     
     # FASE 4: SCA (DEPENDENCIAS)
     - name: "📦 [SCA] Vulnerability Scan (OS/Libraries)"
-      uses: aquasecurity/trivy-action@0.14.0
+      uses: aquasecurity/trivy-action@0.32.0
       with:
         image-ref: 'gitsecops-app:${{ github.sha }}'
         format: 'sarif'
@@ -43,14 +43,14 @@ jobs:
     
     # FASE 5: CONTAINER HARDENING
     - name: "🐳 [Container] Config Audit"
-      uses: aquasecurity/trivy-action@0.14.0
+      uses: aquasecurity/trivy-action@0.32.0
       with:
         image-ref: 'gitsecops-app:${{ github.sha }}'
         scan-type: 'config'
     
     # FASE 6: SECRETS IN ARTIFACTS
     - name: "🔑 [Secrets] Image Layers Scan"
-      uses: aquasecurity/trivy-action@0.14.0
+      uses: aquasecurity/trivy-action@0.32.0
       with:
         image-ref: 'gitsecops-app:${{ github.sha }}'
         security-checks: 'secret'
