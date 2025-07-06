@@ -1,7 +1,7 @@
 # Etapa 1: Build
 FROM node:14.20.1-alpine AS builder
 WORKDIR /app
-COPY package*.json ./
+COPY src/package*.json ./
 RUN npm install
 
 # Etapa 2: Runtime
