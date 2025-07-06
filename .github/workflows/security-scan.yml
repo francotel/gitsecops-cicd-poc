@@ -5,6 +5,10 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  IMAGE_NAME: gitsecops-app
+  IMAGE_TAG: ${{ github.sha }}
+
 jobs:
   security-scan:
     runs-on: ubuntu-latest
@@ -36,7 +40,7 @@ jobs:
     - name: "📦 [SCA] Vulnerability Scan (OS/Libraries)"
       uses: aquasecurity/trivy-action@0.32.0
       with:
-        image-ref: 'gitsecops-app:${{ github.sha }}'
+        image-ref: '$IMAGE_NAME:$IMAGE_TAG'
         format: 'sarif'
         output: 'trivy-vulns.sarif'
         severity: 'CRITICAL,HIGH,MEDIUM'
@@ -45,7 +49,7 @@ jobs:
     - name: "🐳 [Container] Config Audit"
       uses: aquasecurity/trivy-action@0.32.0
       with:
-        image-ref: 'gitsecops-app:${{ github.sha }}'
+        image-ref: '$IMAGE_NAME:$IMAGE_TAG'
         vuln-type: 'os,library'
         scan-type: 'image'
     
@@ -53,16 +57,13 @@ jobs:
     - name: "🔑 [Secrets] Image Layers Scan"
       uses: aquasecurity/trivy-action@0.32.0
       with:
-        image-ref: 'gitsecops-app:${{ github.sha }}'
+        image-ref: '$IMAGE_NAME:$IMAGE_TAG'
         scanners: 'secret'
     
     # FASE 7: REPORTING
     - name: "📊 Upload SAST/SCA Results"
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: 'trivy-vulns.sarif'
-    
-    - name: "📈 Upload Secrets Report"
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: 'trivy-secrets.sarif'
+        sarif_file: |
+          'trivy-vulns.sarif'
+          'trivy-secrets.sarif'
