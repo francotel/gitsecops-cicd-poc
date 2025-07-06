@@ -1,11 +1,11 @@
 # Etapa 1: Build
-FROM node:14.20.1-alpine3.10 AS builder
+FROM node:14.20.1-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
 # Etapa 2: Runtime
-FROM node:14.20.1-alpine3.10
+FROM node:14.20.1-alpine
 WORKDIR /app
 COPY --from=builder /app/node_modules ./node_modules
 COPY . .
