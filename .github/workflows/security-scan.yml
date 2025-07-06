@@ -34,7 +34,7 @@ jobs:
     
     # FASE 3: BUILD
     - name: "🏗 Build Docker Image"
-      run: docker build -t gitsecops-app:${{ github.sha }} .
+      run: docker build -t $IMAGE_NAME:$IMAGE_TAG .
     
     # FASE 4: SCA (DEPENDENCIAS)
     - name: "📦 [SCA] Vulnerability Scan (OS/Libraries)"
