@@ -46,14 +46,15 @@ jobs:
       uses: aquasecurity/trivy-action@0.32.0
       with:
         image-ref: 'gitsecops-app:${{ github.sha }}'
-        scan-type: 'config'
+        vuln-type: 'os,library'
+        scan-type: 'image'
     
     # FASE 6: SECRETS IN ARTIFACTS
     - name: "🔑 [Secrets] Image Layers Scan"
       uses: aquasecurity/trivy-action@0.32.0
       with:
         image-ref: 'gitsecops-app:${{ github.sha }}'
-        security-checks: 'secret'
+        scanners: 'secret'
     
     # FASE 7: REPORTING
     - name: "📊 Upload SAST/SCA Results"
