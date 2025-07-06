@@ -58,11 +58,11 @@ jobs:
     
     # FASE 7: REPORTING
     - name: "📊 Upload SAST/SCA Results"
-      uses: github/codeql-action/upload-sarif@v2
+      uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: 'trivy-vulns.sarif'
     
     - name: "📈 Upload Secrets Report"
-      uses: github/codeql-action/upload-sarif@v2
+      uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: 'trivy-secrets.sarif'
