@@ -58,7 +58,7 @@ jobs:
     - name: "🐳 [Container] Config Audit"
       uses: aquasecurity/trivy-action@0.32.0
       with:
-        image-ref: $IMAGE_NAME:$IMAGE_TAG
+        image-ref: '${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG}}'
         vuln-type: 'os,library'
         scan-type: 'image'
     
@@ -66,7 +66,7 @@ jobs:
     - name: "🔑 [Secrets] Image Layers Scan"
       uses: aquasecurity/trivy-action@0.32.0
       with:
-        image-ref: $IMAGE_NAME:$IMAGE_TAG
+        image-ref: '${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG}}'
         scanners: 'secret'
     
     # FASE 7: REPORTING
