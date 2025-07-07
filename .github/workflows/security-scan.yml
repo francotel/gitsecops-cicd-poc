@@ -49,7 +49,7 @@ jobs:
     - name: "📦 [SCA] Vulnerability Scan (OS/Libraries)"
       uses: aquasecurity/trivy-action@0.32.0
       with:
-        image-ref: '$TRIVY_DOCKER_IMAGE'
+        image-ref: '${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG}}'
         format: 'sarif'
         output: 'trivy-vulns.sarif'
         severity: 'CRITICAL,HIGH,MEDIUM'
