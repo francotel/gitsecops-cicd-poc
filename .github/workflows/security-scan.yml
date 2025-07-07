@@ -8,6 +8,7 @@ on:
 env:
   IMAGE_NAME: gitsecops-app
   IMAGE_TAG: ${{ github.sha }}
+  TRIVY_DOCKER_IMAGE: $IMAGE_NAME:$IMAGE_TAG
 
 jobs:
   security-scan:
@@ -52,8 +53,6 @@ jobs:
         format: 'sarif'
         output: 'trivy-vulns.sarif'
         severity: 'CRITICAL,HIGH,MEDIUM'
-      env:
-        TRIVY_DOCKER_IMAGE: $IMAGE_NAME:$IMAGE_TAG
     
     # FASE 5: CONTAINER HARDENING
     - name: "🐳 [Container] Config Audit"
