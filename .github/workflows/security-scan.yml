@@ -73,7 +73,9 @@ jobs:
     - name: "📊 Upload SAST/SCA Results"
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: 'trivy-vulns.sarif'
+        sarif_file: |
+          'trivy-vulns.sarif'
+          'trivy-secrets.sarif'
         category: my-analysis-tool
 
     # - name: "📊 Upload SAST/SCA Results 2"
