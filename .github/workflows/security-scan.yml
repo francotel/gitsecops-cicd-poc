@@ -50,8 +50,6 @@ jobs:
       uses: aquasecurity/trivy-action@0.32.0
       with:
         image-ref: '${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG}}'
-        format: 'sarif'
-        output: 'trivy-vulns.sarif'
         severity: 'CRITICAL,HIGH,MEDIUM'
     
     # FASE 5: CONTAINER HARDENING
@@ -61,6 +59,8 @@ jobs:
         image-ref: '${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG}}'
         vuln-type: 'os,library'
         scan-type: 'image'
+        format: 'sarif'
+        output: 'trivy-vulns.sarif'
     
     # FASE 6: SECRETS IN ARTIFACTS
     - name: "🔑 [Secrets] Image Layers Scan"
