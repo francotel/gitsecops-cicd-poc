@@ -37,8 +37,7 @@ jobs:
       with:
         scan-type: 'fs'
         scanners: 'secret'
-        # format: 'table'
-        output: 'trivy-secrets.sarif'
+        format: 'table'
     
     # FASE 3: BUILD
     - name: "🏗 Build Docker Image"
@@ -52,36 +51,13 @@ jobs:
         image-ref: '${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG}}'
         severity: 'CRITICAL,HIGH,MEDIUM'
         vuln-type: 'os,library'
-        format: 'sarif'
+        format: 'template'
+        template: '@/contrib/sarif.tpl'
         output: 'trivy-vulns.sarif'
     
-    # FASE 5: CONTAINER HARDENING
-    # - name: "🐳 [Container] Config Audit"
-    #   uses: aquasecurity/trivy-action@0.32.0
-    #   with:
-    #     image-ref: '${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG}}'
-    #     vuln-type: 'os,library'
-    #     scan-type: 'image'
-    #     severity: 'CRITICAL,HIGH,MEDIUM'
-    #     format: 'sarif'
-    #     output: 'trivy-vulns.sarif'
-    
-    # FASE 6: SECRETS IN ARTIFACTS
-    - name: "🔑 [Secrets] Image Layers Scan"
-      uses: aquasecurity/trivy-action@0.32.0
-      with:
-        image-ref: '${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG}}'
-        scanners: 'secret'
-    
-    # FASE 7: REPORTING
+    # FASE 5: REPORTING
     - name: "📊 Upload SAST/SCA Results"
       uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: 'trivy-vulns.sarif'
         category: my-analysis-tool
-
-    # - name: "📊 Upload SAST/SCA Results 2"
-    #   uses: github/codeql-action/upload-sarif@v3
-    #   with:
-    #     sarif_file: 'trivy-secrets.sarif'
-    #     category: my-analysis-tool
