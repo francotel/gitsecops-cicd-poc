@@ -37,7 +37,7 @@ jobs:
       with:
         scan-type: 'fs'
         scanners: 'secret'
-        format: 'table'
+        # format: 'table'
         output: 'trivy-secrets.sarif'
     
     # FASE 3: BUILD
@@ -46,11 +46,12 @@ jobs:
         docker build -t $IMAGE_NAME:$IMAGE_TAG .
     
     # FASE 4: SCA (DEPENDENCIAS)
-    # - name: "📦 [SCA] Vulnerability Scan (OS/Libraries)"
-    #   uses: aquasecurity/trivy-action@0.32.0
-    #   with:
-    #     image-ref: '${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG}}'
-    #     severity: 'CRITICAL,HIGH,MEDIUM'
+    - name: "📦 [SCA] Vulnerability Scan (OS/Libraries)"
+      uses: aquasecurity/trivy-action@0.32.0
+      with:
+        image-ref: '${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG}}'
+        format: 'table'
+        severity: 'CRITICAL,HIGH,MEDIUM'
     
     # FASE 5: CONTAINER HARDENING
     - name: "🐳 [Container] Config Audit"
