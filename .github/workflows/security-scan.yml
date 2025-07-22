@@ -83,7 +83,8 @@ jobs:
     - name: 📊 Extraer resumen para Slack
       id: trivy_summary
       run: |
-        resumen=$(awk '/^.*=+$/ { section=$1 "\n"} /Total:/ { print "*" section "* → " $0}' trivy.txt)
+        # Extraer secciones con severidades
+        resumen=$(awk '/^.*==+$/{section=$1} /\nTotal:/ {print "*"section"* → " $0}' trivy.txt)
         echo "slack_summary=$resumen" >> $GITHUB_OUTPUT
         
     - name: Send Trivy Report to Slack
