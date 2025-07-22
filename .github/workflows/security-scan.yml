@@ -84,7 +84,7 @@ jobs:
       id: vulncheck
       run: |
         if [[ -s trivy.txt ]]; then
-          count=$(grep -Ei 'UNKNOWN|LOW|MEDIUM|HIGH|CRITICAL' trivy.txt | wc -l)
+          count=$(grep -Ei 'HIGH|CRITICAL' trivy.txt | wc -l)
           echo "vulns=$count" >> $GITHUB_OUTPUT
         else
           echo "vulns=0" >> $GITHUB_OUTPUT
@@ -104,7 +104,7 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*🔐 Trivy Scan*\n*📦 Repositorio:* `${{ github.repository }}`\n*🌿 Rama:* `${{ github.ref_name || github.ref }}`\n*🧪 Estado:* `${{ job.status }}`\n*⚠️ Vulnerabilidades encontradas:* `${{ steps.vulncheck.outputs.vulns }}`"
+                  "text": "*🔐 Trivy Scan*\n*📦 Repositorio:* `${{ github.repository }}`\n*🌿 Rama:* `${{ github.ref_name || github.ref }}`\n*⚠️ Vulnerabilidades encontradas HIGH|CRITICAL:* `${{ steps.vulncheck.outputs.vulns }}`"
                 }
               },
               {
