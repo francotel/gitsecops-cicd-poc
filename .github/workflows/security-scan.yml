@@ -64,6 +64,7 @@ jobs:
         output: trivy.txt
     
     - name: Publish Trivy Output to Summary
+      id: trivy_head
       run: |
         if [[ -s trivy.txt ]]; then
           {
@@ -79,6 +80,16 @@ jobs:
           echo "Sin resultados en el escaneo Trivy (trivy.txt vacío)." >> $GITHUB_STEP_SUMMARY
         fi
 
+    - name: 📊 Contar vulnerabilidades encontradas
+      id: vulncheck
+      run: |
+        if [[ -s trivy.txt ]]; then
+          count=$(grep -Ei 'UNKNOWN|LOW|MEDIUM|HIGH|CRITICAL' trivy.txt | wc -l)
+          echo "vulns=$count" >> $GITHUB_OUTPUT
+        else
+          echo "vulns=0" >> $GITHUB_OUTPUT
+        fi
+
     - name: Send Trivy Report to Slack
       if: always()
       uses: slackapi/slack-github-action@v2.1.1
@@ -87,23 +98,20 @@ jobs:
         webhook-type: incoming-webhook
         payload: >
           {
-            "text": ":mag: *Resultado del Análisis Trivy*: `${{ job.status }}`",
+            "text": ":lock: *Análisis Trivy finalizado* (`${{ job.status }}`)",
             "blocks": [
               {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*🔐 Trivy Security Scan*\n*📦 Repositorio:* `${{ github.repository }}`\n*🌿 Rama:* `${{ github.ref }}`\n*🧪 Estado:* `${{ job.status }}`\n🔗 <${{ github.event.pull_request.html_url || github.event.head_commit.url }}|Ver código escaneado>"
+                  "text": "*🔐 Trivy Scan*\n*📦 Repositorio:* `${{ github.repository }}`\n*🌿 Rama:* `${{ github.ref_name || github.ref }}`\n*🧪 Estado:* `${{ job.status }}`\n*⚠️ Vulnerabilidades encontradas:* `${{ steps.vulncheck.outputs.vulns }}`"
                 }
-              },
-              {
-                "type": "divider"
               },
               {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*🧾 Resumen del escaneo Trivy (primeras líneas)*:\n```\n${{ steps.trivy_head.outputs.head_lines }}\n```"
+                  "text": "👉 *[Ver resumen del escaneo en GitHub]*(${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
                 }
               }
             ]
