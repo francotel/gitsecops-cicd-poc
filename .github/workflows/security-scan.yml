@@ -64,7 +64,7 @@ jobs:
         output: trivy.txt
 
     - name: Cat Txt
-      id: trivy_head
+      id: cat-trivy-head
       run: |
         cat trivy.txt
 
