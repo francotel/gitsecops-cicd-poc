@@ -51,9 +51,16 @@ jobs:
         image-ref: '${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG}}'
         severity: 'CRITICAL,HIGH,MEDIUM'
         vuln-type: 'os,library'
-        format: 'template'
-        template: '@/contrib/sarif.tpl'
+        format: 'sarif'
         output: 'trivy-vulns.sarif'
+
+    # FASE x: SCA (test)
+    - name: "📦 [SCA] Vulnerability Scan (OS/Libraries)"
+      uses: aquasecurity/trivy-action@0.32.0
+      with:
+        image-ref: '${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG}}'
+        severity: 'CRITICAL,HIGH,MEDIUM'
+        vuln-type: 'os,library'
     
     # FASE 5: REPORTING
     - name: "📊 Upload SAST/SCA Results"
