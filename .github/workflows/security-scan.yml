@@ -63,11 +63,6 @@ jobs:
         vuln-type: 'os'
         output: trivy.txt
 
-    - name: Cat Txt
-      id: cat-trivy-head
-      run: |
-        cat trivy.txt
-
     - name: Publish Trivy Output to Summary
       id: trivy_head
       run: |
@@ -85,16 +80,13 @@ jobs:
           echo "Sin resultados en el escaneo Trivy (trivy.txt vacío)." >> $GITHUB_STEP_SUMMARY
         fi
 
-    - name: 📊 Contar vulnerabilidades encontradas
-      id: vulncheck
+    - name: 📊 Extraer resumen para Slack
+      id: trivy_summary
       run: |
-        if [[ -s trivy.txt ]]; then
-          count=$(grep -Ei 'HIGH|CRITICAL' trivy.txt | wc -l)
-          echo "vulns=$count" >> $GITHUB_OUTPUT
-        else
-          echo "vulns=0" >> $GITHUB_OUTPUT
-        fi
-
+        # Extraer secciones con severidades
+        resumen=$(awk '/^.*==+$/{section=$1} /Total:/ {print "*"section"* → " $0}' trivy.txt)
+        echo "slack_summary=$resumen" >> $GITHUB_OUTPUT
+        
     - name: Send Trivy Report to Slack
       if: always()
       uses: slackapi/slack-github-action@v2.1.1
@@ -109,7 +101,7 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*🔐 Trivy Scan*\n*📦 Repositorio:* `${{ github.repository }}`\n*🌿 Rama:* `${{ github.ref_name || github.ref }}`\n*⚠️ Vulnerabilidades encontradas HIGH|CRITICAL:* `${{ steps.vulncheck.outputs.vulns }}`"
+                  "text": "*🔐 Trivy Scan*\n*📦 Repositorio:* `${{ github.repository }}`\n*🌿 Rama:* `${{ github.ref_name || github.ref }}`\n*⚠️ Vulnerabilidades encontradas HIGH|CRITICAL:* `${{ steps.trivy_summary.outputs.slack_summary }}`"
                 }
               },
               {
