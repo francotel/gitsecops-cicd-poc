@@ -84,9 +84,7 @@ jobs:
       id: trivy_summary
       run: |
         # Extraer secciones con severidades
-        #resumen=$(awk '/^[a-zA-Z]+$/ { section=$1 } /Total:/ { print "*" section "* → " $0 "\n" }' trivy.txt)
-        resumen=$(awk '/Total:/ { print " $0 }' trivy.txt)
-        
+        awk '/Total:/ && ($0 ~ /HIGH: [1-9]|CRITICAL: [1-9]/) { print; exit }' trivy.txt
         echo "slack_summary=$resumen" >> $GITHUB_OUTPUT
         
     - name: Send Trivy Report to Slack
