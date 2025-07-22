@@ -85,7 +85,7 @@ jobs:
       with:
         webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
         webhook-type: incoming-webhook
-        payload: |
+        payload: >
           {
             "text": ":mag: *Resultado del Análisis Trivy*: `${{ job.status }}`",
             "blocks": [
@@ -93,7 +93,7 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*🔐 Trivy Security Scan Result*\n*📦 Repositorio:* `${{ github.repository }}`\n*🌿 Rama:* `${{ github.ref }}`\n*🧪 Estado:* `${{ job.status }}`\n\n🔗 *[Ver código escaneado](${{ github.event.pull_request.html_url || github.event.head_commit.url }})*"
+                  "text": "*🔐 Trivy Security Scan*\n*📦 Repositorio:* `${{ github.repository }}`\n*🌿 Rama:* `${{ github.ref }}`\n*🧪 Estado:* `${{ job.status }}`\n🔗 <${{ github.event.pull_request.html_url || github.event.head_commit.url }}|Ver código escaneado>"
                 }
               },
               {
@@ -103,7 +103,7 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*🧾 Resumen del escaneo Trivy (primeras líneas)*:\n```\n" + "${{ steps.trivy_head.outputs.head_lines }}" + "\n```"
+                  "text": "*🧾 Resumen del escaneo Trivy (primeras líneas)*:\n```\n${{ steps.trivy_head.outputs.head_lines }}\n```"
                 }
               }
             ]
