@@ -84,7 +84,7 @@ jobs:
       id: trivy_summary
       run: |
         # Extraer secciones con severidades
-        resumen=$(awk '/^.*==+$/{section=$1} /Total:/ {print "*"section"* → " $0}' trivy.txt)
+        resumen=$(awk '/^.*==+$/{section=$1} \n /Total:/ {print "*"section"* → " $0}' trivy.txt)
         echo "slack_summary=$resumen" >> $GITHUB_OUTPUT
         
     - name: Send Trivy Report to Slack
@@ -101,7 +101,7 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*🔐 Trivy Scan*\n*📦 Repositorio:* `${{ github.repository }}`\n*🌿 Rama:* `${{ github.ref_name || github.ref }}`\n*⚠️ Vulnerabilidades encontradas HIGH|CRITICAL:* `${{ steps.trivy_summary.outputs.slack_summary }}`"
+                  "text": "*🔐 Trivy Scan*\n*📦 Repositorio:* `${{ github.repository }}`\n*🌿 Rama:* `${{ github.ref_name || github.ref }}`\n*⚠️ Vulnerabilidades encontradas:* `${{ steps.trivy_summary.outputs.slack_summary }}`"
                 }
               },
               {
