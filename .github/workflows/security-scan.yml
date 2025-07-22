@@ -84,10 +84,10 @@ jobs:
       id: trivy_summary
       run: |
         # Extraer secciones con severidades
-        resumen=$(awk '/^[a-zA-Z]+$/ { section=$1 } /Total:/ { print "*" section "* → " $0 "\n" }' trivy.txt)
+        #resumen=$(awk '/^[a-zA-Z]+$/ { section=$1 } /Total:/ { print "*" section "* → " $0 "\n" }' trivy.txt)
         #resumen=$(awk '/Total:/ { print ":warning: " $0 }' trivy.txt)
         #resumen=$(awk '/Total:/ && ($0 ~ /HIGH: [1-9]|CRITICAL: [1-9]/) { print $0 }' trivy.txt)
-        #resumen=$(awk '/^.*==+$/{section=$1} /\nTotal:/ {print "*"section"* → " $0}' trivy.txt)
+        resumen=$(awk '/^.*==+$/{section=$1} /\nTotal:/ {print "*"section"* → " $0}' trivy.txt)
         
         echo "slack_summary=$resumen" >> $GITHUB_OUTPUT
         
