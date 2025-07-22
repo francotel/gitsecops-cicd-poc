@@ -85,8 +85,7 @@ jobs:
       run: |
         # Extraer secciones con severidades
         #resumen=$(awk '/^[a-zA-Z]+$/ { section=$1 } /Total:/ { print "*" section "* → " $0 "\n" }' trivy.txt)
-        #resumen=$(awk '/Total:/ { print ":warning: " $0 }' trivy.txt)
-        resumen=$(awk '/Total:/ && ($0 ~ /HIGH: [1-9]|CRITICAL: [1-9]/)' trivy.txt | { read resumen && echo "slack_summary<<EOF"$'\n'"$resumen"$'\n'"EOF"; } >> "$GITHUB_OUTPUT")
+        resumen=$(awk '/Total:/ { print " $0 }' trivy.txt)
         
         echo "slack_summary=$resumen" >> $GITHUB_OUTPUT
         
