@@ -61,7 +61,24 @@ jobs:
         image-ref: '${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG}}'
         severity: 'CRITICAL,HIGH,MEDIUM'
         vuln-type: 'os'
+        output: trivy.txt
     
+    - name: Publish Trivy Output to Summary
+      run: |
+        if [[ -s trivy.txt ]]; then
+          {
+            echo "### 🛡️ Trivy Config Scan Results"
+            echo "<details><summary>Ver detalles</summary>"
+            echo ""
+            echo '```'
+            cat trivy.txt | head -n 100  # Limita la longitud
+            echo '```'
+            echo "</details>"
+          } >> $GITHUB_STEP_SUMMARY
+        else
+          echo "Sin resultados en el escaneo Trivy (trivy.txt vacío)." >> $GITHUB_STEP_SUMMARY
+        fi
+
     # FASE 5: REPORTING
     - name: "📊 Upload SAST/SCA Results"
       uses: github/codeql-action/upload-sarif@v3
