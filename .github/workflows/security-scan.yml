@@ -79,6 +79,33 @@ jobs:
           echo "Sin resultados en el escaneo Trivy (trivy.txt vacío)." >> $GITHUB_STEP_SUMMARY
         fi
 
+    - name: Send Trivy Report to Slack
+      if: always()
+      uses: slackapi/slack-github-action@v2.1.1
+      with:
+        webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+        webhook-type: incoming-webhook
+        payload: |
+          {
+            "text": "*Resultado del Análisis de Seguridad (Trivy)*: ${{ job.status }}",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*🔍 Resultado del Análisis Trivy*: `${{ job.status }}`\nRepositorio: `${{ github.repository }}`\nRef: `${{ github.ref }}`\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|Ver código escaneado>"
+                }
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*🧪 Resumen del escaneo:* \n```\n$(head -n 20 trivy.txt)\n```"
+                }
+              }
+            ]
+          }
+
     # FASE 5: REPORTING
     - name: "📊 Upload SAST/SCA Results"
       uses: github/codeql-action/upload-sarif@v3
