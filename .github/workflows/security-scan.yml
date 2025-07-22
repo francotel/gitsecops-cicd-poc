@@ -71,7 +71,7 @@ jobs:
             echo "<details><summary>Ver detalles</summary>"
             echo ""
             echo '```'
-            cat trivy.txt | head -n 100  # Limita la longitud
+            cat trivy.txt | head -n 1000  # Limita la longitud
             echo '```'
             echo "</details>"
           } >> $GITHUB_STEP_SUMMARY
@@ -87,20 +87,23 @@ jobs:
         webhook-type: incoming-webhook
         payload: |
           {
-            "text": "*Resultado del Análisis de Seguridad (Trivy)*: ${{ job.status }}",
+            "text": ":mag: *Resultado del Análisis Trivy*: `${{ job.status }}`",
             "blocks": [
               {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*🔍 Resultado del Análisis Trivy*: `${{ job.status }}`\nRepositorio: `${{ github.repository }}`\nRef: `${{ github.ref }}`\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|Ver código escaneado>"
+                  "text": "*🔐 Trivy Security Scan Result*\n*📦 Repositorio:* `${{ github.repository }}`\n*🌿 Rama:* `${{ github.ref }}`\n*🧪 Estado:* `${{ job.status }}`\n\n🔗 *[Ver código escaneado](${{ github.event.pull_request.html_url || github.event.head_commit.url }})*"
                 }
+              },
+              {
+                "type": "divider"
               },
               {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*🧪 Resumen del escaneo:* \n```\n$(head -n 20 trivy.txt)\n```"
+                  "text": "*🧾 Resumen del escaneo Trivy (primeras líneas)*:\n```\n" + "${{ steps.trivy_head.outputs.head_lines }}" + "\n```"
                 }
               }
             ]
