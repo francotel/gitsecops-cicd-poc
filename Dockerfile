@@ -8,7 +8,7 @@ RUN npm ci
 FROM node:14.20.1-alpine
 WORKDIR /app
 COPY --from=builder /app/node_modules ./node_modules
-COPY . .
+COPY src/ .
 
 # Configuración insegura a propósito para detectar
 RUN chmod 777 /tmp
