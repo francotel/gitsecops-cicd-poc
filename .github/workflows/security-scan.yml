@@ -31,6 +31,17 @@ jobs:
         path: ~/.cache/trivy
         key: ${{ runner.os }}-trivy-db
 
+    - name: Run Trivy config scanner
+      uses: aquasecurity/trivy-action@0.32.0
+      with:
+        scan-type: 'config'
+        hide-progress: true
+        output: config.txt
+        #format: 'sarif'
+        #output: 'trivy-results.sarif'
+        #exit-code: '1'
+        severity: 'CRITICAL,HIGH'
+
     # FASE 2: SAST (ANÁLISIS ESTÁTICO)
     - name: "🔍 [SAST] Secrets Scanning (Code)"
       uses: aquasecurity/trivy-action@0.32.0
@@ -68,10 +79,11 @@ jobs:
       run: |
         if [[ -s trivy.txt ]]; then
           {
-            echo "### 🛡️ Trivy Config Scan Results"
+            echo "### 🛡️ Trivy Config/Scan Results"
             echo "<details><summary>Ver detalles</summary>"
             echo ""
             echo '```'
+            cat config.txt
             cat trivy.txt | head -n 1000  # Limita la longitud
             echo '```'
             echo "</details>"
