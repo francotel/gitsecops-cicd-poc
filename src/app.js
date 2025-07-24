@@ -1,20 +1,28 @@
-// Agrega al inicio (solo para testing)
-const fakeSecrets = require('./config-demo'); // Esto activará también el escaneo de imports
-console.log('Demo secrets loaded'); // No usar en producción
+// ⚠️ DEMO ONLY: Fuerza la carga de secretos para testing de Trivy (no usar en producción)
+require('./config-demo'); 
+console.log('⚠️ Se han cargado secretos de prueba desde config-demo.js');
 
+// App principal
 const express = require('express');
 const app = express();
-const vulnerablePackage = require('axios'); // Paquete con vulnerabilidades conocidas
+
+// Importa axios vulnerable (para propósitos de escaneo)
+const axios = require('axios');
+const axiosVersion = require('axios/package.json').version;
 
 app.get('/', (req, res) => {
+  res.setHeader('Content-Type', 'text/html');
   res.send(`
-    <h1>GitSecOps POC</h1>
-    <p>Esta es una aplicación dummy para demostrar Trivy</p>
-    <p>Versión de Node: ${process.version}</p>
-    <p>Versión de Axios: ${vulnerablePackage.version}</p>
+    <h1>🔐 GitSecOps POC</h1>
+    <p>Esta es una aplicación dummy para demostrar escaneo con <strong>Trivy</strong>.</p>
+    <ul>
+      <li>Versión de Node.js: ${process.version}</li>
+      <li>Versión de Axios: ${axiosVersion}</li>
+    </ul>
   `);
 });
 
-app.listen(3000, () => {
-  console.log('App escuchando en puerto 3000');
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Aplicación dummy escuchando en http://localhost:${PORT}`);
 });
