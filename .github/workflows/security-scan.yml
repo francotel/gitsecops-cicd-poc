@@ -83,7 +83,9 @@ jobs:
             echo "<details><summary>Ver detalles</summary>"
             echo ""
             echo '```'
+            echo 'Summary Configs (IaC/Dockerfile)'
             cat config.txt
+            echo 'Summary OS (Image Container)'
             cat trivy.txt | head -n 1000  # Limita la longitud
             echo '```'
             echo "</details>"
