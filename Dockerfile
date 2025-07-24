@@ -2,7 +2,7 @@
 FROM node:14.20.1-alpine AS builder
 WORKDIR /app
 COPY src/package*.json ./
-RUN npm install
+RUN npm install --package-lock-only
 
 # Etapa 2: Runtime
 FROM node:14.20.1-alpine

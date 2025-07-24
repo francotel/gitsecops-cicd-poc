@@ -54,7 +54,6 @@ jobs:
     - name: "🏗 Build Docker Image"
       run: |
         docker build -t $IMAGE_NAME:$IMAGE_TAG .
-        cat /root/.npm/_logs/*-debug.log
     
     # FASE 4: SCA (DEPENDENCIAS)
     - name: "📦 [SCA] Vulnerability Scan (OS/Libraries)"
