@@ -31,7 +31,7 @@ jobs:
         path: ~/.cache/trivy
         key: ${{ runner.os }}-trivy-db
 
-    - name: Run Trivy config scanner
+    - name: Run Trivy Config scanner
       uses: aquasecurity/trivy-action@0.32.0
       with:
         scan-type: 'config'
@@ -48,7 +48,7 @@ jobs:
       with:
         scan-type: 'fs'
         scanners: 'secret'
-        format: 'table'
+        output: secrets.txt
     
     # FASE 3: BUILD
     - name: "🏗 Build Docker Image"
@@ -83,6 +83,8 @@ jobs:
             echo "<details><summary>Ver detalles</summary>"
             echo ""
             echo '```'
+            echo 'Summary Secrets'
+            cat secrets.txt
             echo 'Summary Configs (IaC/Dockerfile)'
             cat config.txt
             echo 'Summary OS (Image Container)'
