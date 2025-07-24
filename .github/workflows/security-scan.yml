@@ -37,9 +37,6 @@ jobs:
         scan-type: 'config'
         hide-progress: true
         output: config.txt
-        #format: 'sarif'
-        #output: 'trivy-results.sarif'
-        #exit-code: '1'
         severity: 'CRITICAL,HIGH'
 
     # FASE 2: SAST (ANÁLISIS ESTÁTICO)
